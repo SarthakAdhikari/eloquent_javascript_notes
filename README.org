@@ -288,3 +288,74 @@ for (let i = 0; i < size; i++) {
 :  # # # #
 : # # # #
 :  # # # #
+
+* Chapter 3 (Functions)
+** Notes
+
+*** Creating local scope
+~let~ and ~const~ are created within the local scope whereas ~var~ is visible throughout the global scope if called outside a function.
+#+begin_src js  :exports both :results output
+var x = 10;
+if(1){
+  var y = 20;
+}
+
+console.log(x);
+console.log(y);
+
+function test(){
+  var k = 20;
+}
+// console.log(k)    // this throws ReferenceError
+#+end_src
+
+#+RESULTS:
+: 10
+: 20
+
+#+begin_src js  :exports code :results output
+if(1){
+  let y = 20;
+}
+
+// console.log(y)    // this throws ReferenceError
+#+end_src
+
+*** Function declaration
+
+Functions are conceptually moved to the top of their scope so we can define it later in the code.
+
+#+begin_src js
+console.log("And in the end, he said: ", later());
+
+function later() {
+  return "Hero ko entry last ma huncha..";
+}
+#+end_src
+
+*** Extra or missing arguments
+    JavaScript is extremely broad-minded about the number of arguments you pass to a function. If you pass too many, the extra ones are ignored. If you pass too few, the missing parameters get assigned the value undefined.
+
+*** Closures
+
+Inner functions(functions inside functions) in javascript keep track of their free variables even when the execution of the external function has finished.
+
+A simple use case for closures:
+#+begin_src js  :exports code :results output
+function wrap_tag(tag){
+  function content(msg){
+    console.log("<" + tag + ">" + msg + "</" + tag + ">");
+  }
+  return content;
+}
+
+let h1_wrapped = wrap_tag("h1");
+let heading_content = h1_wrapped("Welcome to my site!");
+
+let paragraph_wrapped = wrap_tag("p");
+let paragraph_content = paragraph_wrapped("This is the content");
+#+end_src
+
+#+RESULTS:
+: <h1>Welcome to my site!</h1>
+: <p>This is the content</p>

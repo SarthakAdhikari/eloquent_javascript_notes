@@ -35,17 +35,18 @@ console.log(null !== 0); //true
  *Use ~===~ or ~!==~ operator if you don't want type conversion.*
 
  #+begin_src js :exports both :results output
-// null or undefined on both sides means equal
+// triple equal sign checks if it is the same thing without type conversion
 console.log(null === null);
-
-// null or undefined on only one side means not equal
 console.log(undefined === undefined);
 
+// but two non-sensical values are not the same
+console.log(NaN === NaN);
  #+end_src
 
  #+RESULTS:
  : true
  : true
+ : false
 
 *** || and && operators
 

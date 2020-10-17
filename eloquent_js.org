@@ -1,0 +1,111 @@
+#+SETUPFILE: ~/org/conf/org-html-themes/setup/theme-readtheorg.setup
+
+#+HTML_HEAD: <link rel="stylesheet" href="/home/sarthak/org/conf/css/rto_big.css" type="text/css">
+
+#+OPTIONS: num:nil ^:nil \n:t H:6
+#+TITLE: Eloquent JS notes
+
+* Chapter 1 (Values, Types, and Operators)
+** Notes
+*** null and undefined comparison
+
+ When the types differ, JavaScript uses a complicated and confusing
+ set of rules to determine what to do. In most cases, it just tries to
+ convert one of the values to the other value’s type. However, when
+ ~null~ or ~undefined~ occurs on either side of the operator, it produces
+ true only if both sides are one of ~null~ or ~undefined~.
+
+ #+begin_src js :exports both :results output
+// null or undefined on both sides means equal
+console.log(null == undefined); //true
+console.log(null !== undefined); //true
+
+// null or undefined on only one side means not equal
+console.log(null == 0); //false
+console.log(null !== 0); //true
+ #+end_src
+
+ #+RESULTS:
+ : true
+ : true
+ : false
+ : true
+
+
+ *Use ~===~ or ~!==~ operator if you don't want type conversion.*
+
+ #+begin_src js :exports both :results output
+// null or undefined on both sides means equal
+console.log(null === null);
+
+// null or undefined on only one side means not equal
+console.log(undefined === undefined);
+
+ #+end_src
+
+ #+RESULTS:
+ : true
+ : true
+
+*** || and && operators
+
+ The ~||~ operator works like following(pseudocode):
+ #+begin_src js :eval no
+function ||(left, right) {
+  if convertToBoolean(left) === True {
+      return left;
+  }
+  return right
+}
+// For eg: 0 || 8 returns 8
+// 0, NaN and empty string => false, others => true
+ #+end_src
+
+ #+RESULTS:
+
+ The ~&&~ operator works the same way but  is the exact opposite(pseudocode):
+
+ #+begin_src js :eval no
+function &&(left, right) {
+  if convertToBoolean(left) === False {
+      return left;
+  }
+  return right;
+}
+
+// For eg: 0 && 8 returns 0
+// 0, NaN and empty string => false, others => true
+ #+end_src
+
+* Chapter 2 (Program Structure)
+** Exercises
+
++ Write a loop that makes seven calls to console.log to output the following triangle:
+#+begin_example
+#
+##
+###
+####
+#####
+######
+#######
+#+end_example
+
+Solution:
+#+begin_src js :exports both :results output
+for(let i = 0; i < 7; i++){
+  for(let j = 0; j <= i; j++){
+    process.stdout.write("#");
+  }
+  process.stdout.write("\n");
+}
+#+end_src
+
+#+RESULTS:
+: #
+: ##
+: ###
+: ####
+: #####
+: ######
+: #######

@@ -80,7 +80,8 @@ function &&(left, right) {
 * Chapter 2 (Program Structure)
 ** Exercises
 
-+ Write a loop that makes seven calls to console.log to output the following triangle:
+*** Looping a triange
+    Write a loop that makes seven calls to console.log to output the following triangle:
 #+begin_example
 #
 ##
@@ -91,7 +92,7 @@ function &&(left, right) {
 #######
 #+end_example
 
-Solution:
+**** Solution:
 #+begin_src js :exports both :results output
 for(let i = 0; i < 7; i++){
   for(let j = 0; j <= i; j++){

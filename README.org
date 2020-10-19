@@ -29,6 +29,7 @@ console.log(null !== 0); //true
  : true
  : true
  : false
+ : false
  : true
 
 
@@ -494,3 +495,368 @@ console.log(countChar("BBBcccssCB", "c"));
 
 #+RESULTS:
 : 3
+
+* Chapter 3 (Objects and Arrays)
+
+** Notes
+
+*** Properties
+
+Almost all javascript values have properties except ~null~ and ~undefined~.
+
+*** Mutability
+
+#+begin_src js :exports both :results output
+let object1 = {"value": 10}
+let object2 = object1;
+let object3 = {"value": 10}
+
+//object1 and object2 point to the same reference in memory
+console.log(object1 === object2);
+console.log(object1 == object2);
+
+//object1 and object3 don't point to the same reference in memory
+console.log(object1 === object3);
+console.log(object1 == object3);
+#+end_src
+
+#+RESULTS:
+: true
+: true
+: false
+: false
+
+*** Shift/Unshift
+
+~unshift()~ adds element to the start of array.
+~shift()~ removes element from  the end of array.
+
+#+begin_src js :exports both :results output
+let fruits = ["Banana", "Orange", "Apple", "Mango"];
+
+fruits.shift();
+console.log(fruits);
+
+fruits.unshift("Lemon");
+console.log(fruits);
+#+end_src
+
+#+RESULTS:
+: [ 'Orange', 'Apple', 'Mango' ]
+: [ 'Lemon', 'Orange', 'Apple', 'Mango' ]
+
+*** Slice
+~slice()~ returns the elements between two indexes. The start index is inclusive and ~the end index is exclusive~.
+
+#+begin_src js :exports both :results output
+let fruits = ["Banana", "Orange", "Apple", "Mango"];
+
+sliced_fruits = fruits.slice(1,3);
+console.log(sliced_fruits);
+#+end_src
+
+#+RESULTS:
+: [ 'Orange', 'Apple' ]
+
+*** Passing list of arguments
+
+We use ~...args~ (three dots) before the name of the varible which will store the unspecified number of arguments(in this case,
+
+Similar to ~*args* in python.
+
+#+begin_src js :exports both :results output
+function printFruits(first, second, ...other){
+  console.log("First fruit = ", first);
+  console.log("Second fruit = ", second);
+  console.log("Others:");
+  for (let fruit of other){
+    console.log(fruit);
+  }
+}
+printFruits("Apple", "Banana", "Mango", "Lemon")
+#+end_src
+
+#+RESULTS:
+: First fruit =  Apple
+: Second fruit =  Banana
+: Others:
+: Mango
+: Lemon
+
+*** ~let~ and ~const~ multiple declaration
+
+~let~ and ~const~ throw ~SyntaxError~ when if we try to declare the same object multiple times.
+
+However, This is allowed if we use ~var~ or when redeclaring with ~function~.
+#+begin_src js :results output
+let a = 5;
+// let a = 10; // SyntaxError
+
+var b = 10;
+var b = 5; // this is allowed
+#+end_src
+
+#+RESULTS:
+: 0.3692661904450243
+
+** Exercises
+
+*** THE SUM OF A RANGE
+
+Given below is an example program:
+#+begin_src js :exports code :eval no
+console.log(sum(range(1, 10)));
+#+end_src
+
+#+RESULTS:
+
+Write a range function that takes two arguments, start and end, and returns an array containing all the numbers from start up to (and including) end.
+
+Next, write a sum function that takes an array of numbers and returns the sum of these numbers. Run the example program and see whether it does indeed return 55.
+
+As a bonus assignment, modify your range function to take an optional third argument that indicates the “step” value used when building the array. If no step is given, the elements go up by increments of one, corresponding to the old behavior. The function call range(1, 10, 2) should return [1, 3, 5, 7, 9]. Make sure it also works with negative step values so that range(5, 2, -1) produces [5, 4, 3, 2].
+
+**** Solution:
+
+  The range function:
+  #+begin_src js :noweb-ref 3-unmodified-range-function  :exports both :results output
+function range(start, end){
+  let final = [];
+  for(let i = start; i <= end; i++){
+    final.push(i);
+  }
+  return final;
+}
+  #+end_src
+
+  The sum function:
+  #+begin_src js :noweb-ref 3-sum-function   :exports code :results output :eval no
+function sum(array){
+  let final = 0;
+  for(let element of array){
+    final += element;
+  }
+  return final;
+}
+console.log(sum(range(1, 10)));
+  #+end_src
+
+
+  #+begin_src js :noweb yes :exports results :results output
+<<3-unmodified-range-function>>
+<<3-sum-function>>
+  #+end_src
+
+  #+RESULTS:
+  : 55
+
+  The modified function with step looks like the following:
+  #+begin_src js :exports both :results output
+function range(start, end, step) {
+    let final = [];
+    if (step < 0) {
+        negative_range()
+    } else {
+        positive_range()
+    }
+
+    function positive_range() {
+        for (let i = start; i <= end; i = i + step) {
+            final.push(i);
+        }
+    }
+
+    function negative_range() {
+        for (let i = start; i >= end; i = i + step) {
+            final.push(i);
+        }
+    }
+    return final;
+}
+console.log(range(1, 10, 2));
+console.log(range(5, 2, -1));
+  #+end_src
+
+  #+RESULTS:
+  : [ 1, 3, 5, 7, 9 ]
+  : [ 5, 4, 3, 2 ]
+
+*** Reversing an array
+
+Arrays have a reverse method that changes the array by inverting the order in which its elements appear. For this exercise, write two functions, ~reverseArray~ and ~reverseArrayInPlace~. The first, ~reverseArray~, takes an array as argument and produces a new array that has the same elements in the inverse order. The second, ~reverseArrayInPlace~, does what the reverse method does: it modifies the array given as argument by reversing its elements. Neither may use the standard reverse method.
+
+Thinking back to the notes about side effects and pure functions in the previous chapter, which variant do you expect to be useful in more situations? Which one runs faster?
+
+**** Solution:
+
+The ~reverseArray~ function:
+#+begin_src js  :exports both :results output
+function reverseArray(array){
+  let final = [];
+  for(let i = array.length-1; i >= 0; i--){
+    final.push(array[i]);
+  }
+  return final;
+}
+console.log(reverseArray([1,2,3,4, 5, 6, 7, 8, 9, 10]));
+#+end_src
+
+#+RESULTS:
+: [ 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 ]
+
+The ~reverseArrayInPlace~ function:
+#+begin_src js :exports code :results output
+function reverseArrayInPlace(array){
+  let replace_index = array.length -1 ;
+  let array_length = array.length;
+  let loop_until = Math.floor(array_length/2);
+  let temp = 0;
+  for(let index = 0; index <= loop_until; index++){
+    temp = array[index];
+    array[index] = array[replace_index];
+    array[replace_index] = temp;
+    replace_index--;
+  }
+  return array;
+}
+console.log(reverseArrayInPlace([1,2,3,4,5,6,7,8,9,10]));
+#+end_src
+
+#+RESULTS:
+: [ 10, 9, 8, 7, 5, 6, 4, 3, 2, 1 ]
+
+The ~reverseArray~ runs faster because it performs less operation. However, it uses more space. So, ~reverseArray()~ can be used if performance is important and ~reverseArrayinPlace~ can be used if saving space is important.
+
+
+*** A LIST
+ A list is a nested set of objects, with the first object holding a reference to the second, the second to the third, and so on.
+
+#+begin_src js :exports code :results output
+let list = {
+  value: 1,
+  rest: {
+    value: 2,
+    rest: {
+      value: 3,
+      rest: null
+    }
+  }
+};
+#+end_src
+
+Write a function ~arrayToList~ that builds up a list structure like the one shown when given [1, 2, 3] as argument. Also write a ~listToArray~ function that produces an array from a list. Then add a helper function prepend, which takes an element and a list and creates a new list that adds the element to the front of the input list, and nth, which takes a list and a number and returns the element at the given position in the list (with zero referring to the first element) or undefined when there is no such element.
+
+If you haven’t already, also write a recursive version of nth.
+
+#+caption: arrayToList
+#+begin_src js :noweb-ref 4-arrayToList :exports both :results output
+function arrayToList(array){
+  let final_list = null;
+  let temp = {};
+  for(let i = array.length - 1; i >= 0; i--){
+    final_list =  {"value": array[i], "rest": final_list}
+  }
+  return final_list;
+}
+#+end_src
+
+#+begin_src js :noweb yes js :exports results :results output
+<<4-arrayToList>>
+console.log(arrayToList([1,2,3]));
+#+end_src
+
+#+RESULTS:
+: { value: 1, rest: { value: 2, rest: { value: 3, rest: null } } }
+
+#+caption: listToArray
+#+begin_src js :exports both :results output
+function listToArray (list){
+  let finalArray = [];
+  for(let node = list; node; node=node.rest){
+    finalArray.push(node.value);
+  }
+  return finalArray;
+}
+console.log(listToArray({ value: 1, rest: { value: 2, rest: { value: 3, rest: null } } }));
+#+end_src
+
+
+#+RESULTS:
+: [ 1, 2, 3 ]
+
+#+caption: recursive nth
+#+begin_src js :noweb-ref 4-nth :exports code :results output
+function nth(list, index){
+  if(index == 0){
+    return list["value"];
+  }
+  return nth(list["rest"], index-1,);
+}
+console.log(nth(arrayToList([10, 20, 30]), 2));
+#+end_src
+
+#+RESULTS:
+
+#+begin_src js :noweb yes :exports results :results output
+<<4-arrayToList>>
+<<4-nth>>
+#+end_src
+
+
+#+RESULTS:
+: 30
+
+*** DEEP COMPARISON
+The ~==~ operator compares objects by identity. But sometimes you’d prefer to compare the values of their actual properties.
+
+Write a function deepEqual that takes two values and returns true only if they are the same value or are objects with the same properties, where the values of the properties are equal when compared with a recursive call to deepEqual.
+
+To find out whether values should be compared directly (use the === operator for that) or have their properties compared, you can use the ~typeof~ operator. If it produces "object" for both values, you should do a deep comparison. But you have to take one silly exception into account: because of a historical accident, typeof null also produces "object".
+
+The ~Object.keys~ function will be useful when you need to go over the properties of objects to compare them.
+
+#+begin_src js :exports both :results output
+function deepEqual(first_obj, second_obj) {
+
+    // handle with strict equality if possible
+    if (first_obj === second_obj) {
+        return true;
+    }
+
+    // Object.keys(null) returns TypeError, so avoid that and continue only if both values are objects.
+    if (typeof first_obj !== "object" || typeof second_obj !== "object" ||
+        first_obj == "null" || second_obj == "null"
+    ) {
+
+        return false;
+    }
+
+    first_keys = Object.keys(first_obj);
+    second_keys = Object.keys(second_obj);
+
+  //if the keys are not the same length, they cannot be equal
+    if (first_keys.length !== second_keys.length) {
+        return false;
+    }
+    for (key of first_keys) {
+        //since key lengths are equal, each key must be present in both objects
+        if (!second_keys.includes(key)) {
+            return false;
+        }
+
+      return deepEqual(first_obj[key], second_obj[key]);
+
+    }
+    return true;
+}
+
+let obj = {here: {is: "an"}, object: 2};
+console.log(deepEqual(obj, obj));
+console.log(deepEqual(obj, {here: 1, object: 2}));
+console.log(deepEqual(obj, {here: {is: "an"}, object: 2}));
+#+end_src
+
+#+RESULTS:
+: true
+: false
+: true
